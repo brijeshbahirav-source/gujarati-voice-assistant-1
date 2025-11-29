@@ -16,6 +16,11 @@ async function askGPT(question, key) {
         });
 
         const data = await response.json();
+
+        if (!data || !data.choices || !data.choices[0]) {
+            return "❌ API response error.";
+        }
+
         return data.choices[0].message.content;
 
     } catch (e) {
@@ -32,33 +37,31 @@ function startListening() {
         return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
         output.innerHTML = "❌ Voice Recognition Support નથી.";
         return;
     }
 
-    let rec = new SpeechRecognition();
+    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     rec.lang = "gu-IN";
     rec.start();
 
     output.innerHTML = "🎙️ સાંભળું છું…";
 
-    rec.onresult = async function(e) {
-        let userText = e.results[0][0].transcript;
-        output.innerHTML = "📌 તમે બોલ્યા: <b>" + userText + "</b><br>";
+    rec.onresult = async function(event) {
+        const userText = event.results[0][0].transcript;
+        output.innerHTML = "📌 તમે બોલ્યા: <b>" + userText + "</b>";
 
-        let aiReply = await askGPT(userText, key);
+        const aiReply = await askGPT(userText, key);
 
-        output.innerHTML += "<br>🤖 જવાબ: <b>" + aiReply + "</b>";
+        output.innerHTML += "<br><br>🤖 જવાબ: <b style='color:green;'>" + aiReply + "</b>";
 
         speak(aiReply);
     };
 }
 
 function speak(text) {
-    let tts = new SpeechSynthesisUtterance(text);
+    const tts = new SpeechSynthesisUtterance(text);
     tts.lang = "gu-IN";
     speechSynthesis.speak(tts);
 }
