@@ -7,7 +7,7 @@ async function askGPT(question, key) {
                 "Authorization": "Bearer " + key
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",  
                 messages: [
                     { role: "system", content: "You are a helpful assistant that speaks Gujarati." },
                     { role: "user", content: question }
@@ -18,13 +18,13 @@ async function askGPT(question, key) {
         const data = await response.json();
 
         if (!data || !data.choices || !data.choices[0]) {
-            return "❌ API response error.";
+            return "❌ API response error: " + JSON.stringify(data);
         }
 
         return data.choices[0].message.content;
 
     } catch (e) {
-        return "❌ Error: " + e.message;
+        return "❌ API error: " + e.message;
     }
 }
 
@@ -37,15 +37,10 @@ function startListening() {
         return;
     }
 
-    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-        output.innerHTML = "❌ Voice Recognition Support નથી.";
-        return;
-    }
-
     const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     rec.lang = "gu-IN";
-    rec.start();
 
+    rec.start();
     output.innerHTML = "🎙️ સાંભળું છું…";
 
     rec.onresult = async function(event) {
@@ -54,7 +49,7 @@ function startListening() {
 
         const aiReply = await askGPT(userText, key);
 
-        output.innerHTML += "<br><br>🤖 જવાબ: <b style='color:green;'>" + aiReply + "</b>";
+        output.innerHTML += "<br><br>🤖 જવાબ: <b>" + aiReply + "</b>";
 
         speak(aiReply);
     };
