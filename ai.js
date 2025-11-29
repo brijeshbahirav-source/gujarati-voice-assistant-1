@@ -27,27 +27,26 @@ async function askGPT(question, apiKey) {
 }
 
 function startListening() {
-    let apiKey = document.getElementById("apikey").value;
+    const apiKey = document.getElementById("apikey").value.trim();
     if (!apiKey) {
-        alert("⚠️ API key નાખો!");
+        alert("⚠️ API Key દાખલ કરો!");
         return;
     }
 
-    const output = document.getElementById("output");
+    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    rec.lang = "gu-IN";
+    rec.start();
 
-    let recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "gu-IN";
-    recognition.start();
+    rec.onresult = async function(event) {
+        const userText = event.results[0][0].transcript;
+        const ou = document.getElementById("output");
+        ou.innerHTML = "📌 તમે બોલ્યા: <b>" + userText + "</b>";
 
-    recognition.onresult = async function(event) {
-        let speech = event.results[0][0].transcript;
-        output.innerHTML = "તમે બોલ્યા: " + speech;
+        const reply = await askGPT(userText, apiKey);
+        ou.innerHTML += "<br><br>🤖 જવાબ: <b>" + reply + "</b>";
 
-        let reply = await askGPT(speech, apiKey);
-        output.innerHTML += "<br><br>🤖 જવાબ: " + reply;
-
-        let utter = new SpeechSynthesisUtterance(reply);
-        utter.lang = "gu-IN";
-        speechSynthesis.speak(utter);
+        const tts = new SpeechSynthesisUtterance(reply);
+        tts.lang = "gu-IN";
+        speechSynthesis.speak(tts);
     };
 }
