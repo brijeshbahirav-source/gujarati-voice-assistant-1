@@ -41,11 +41,10 @@ button {
 function startListening() {
     const output = document.getElementById("output");
 
-    // Browser speech recognition support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-        output.innerHTML = "❌ તમારા બ્રાઉઝર માં voice support નથી.";
+        output.innerHTML = "❌ તમારા બ્રાઉઝરમાં Voice Support નથી.";
         return;
     }
 
@@ -76,24 +75,29 @@ function reply(msg) {
     if (msg.includes("નમસ્તે") || msg.includes("હેલો")) {
         ans = "નમસ્તે, કેમ છો?";
     } 
-    else if (msg.includes("તારું નામ શું છે")) {
+    else if (msg.includes("તારું નામ")) {
         ans = "મારું નામ ગુજરાતી વોઇસ અસિસ્ટન્ટ છે.";
     }
     else if (msg.includes("કેમ છો")) {
-        ans = "હું મસ્ત છું. તમે કેમ છો?";
+        ans = "હું મજામાં છું. તમે કેમ છો?";
     }
     else if (msg.includes("સમય")) {
         ans = "હમણાનો સમય " + new Date().toLocaleTimeString() + " છે.";
     }
-    else if (msg.includes("થઈ ગયું")) {
-        ans = "બરાબર, કોઈ બીજી મદદ જોઈએ તો કહેજો.";
+    else if (msg.includes("તારીખ")) {
+        ans = "આજે તારીખ " + new Date().toLocaleDateString() + " છે.";
+    }
+    else if (msg.includes("બંધ")) {
+        ans = "બરાબર, હું બંધ કરી દઉં છું.";
     }
     else {
         ans = "મને આ પ્રશ્ન સમજાયો નથી. ફરી બોલશો?";
     }
 
     speak(ans);
-    document.getElementById("output").innerHTML += "<br><br>🤖 જવાબ: <b>" + ans + "</b>";
+
+    document.getElementById("output").innerHTML +=
+        "<br><br>🤖 જવાબ: <b>" + ans + "</b>";
 }
 
 function speak(text) {
