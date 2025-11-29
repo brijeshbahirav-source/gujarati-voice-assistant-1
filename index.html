@@ -3,109 +3,47 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gujarati Voice Assistant</title>
+<title>Gujarati AI Voice Assistant (Online)</title>
 
 <style>
 body {
     font-family: Arial, sans-serif;
     background: #f2f2f2;
     text-align: center;
-    padding: 40px;
+    padding: 30px;
+}
+input, button {
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 button {
-    padding: 15px 30px;
-    font-size: 20px;
-    border: none;
-    background: #009688;
+    background: #00796b;
     color: white;
-    border-radius: 10px;
+    border: none;
 }
 #output {
     margin-top: 20px;
-    font-size: 24px;
-    color: #333;
+    font-size: 22px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>🎤 Gujarati Voice Assistant</h2>
-<p>બોલો બટન દબાવો અને ગુજરાતી માં વાત કરો.</p>
+<h2>🤖 Gujarati Online AI Voice Assistant</h2>
+<p>તમારી OpenAI API Key દાખલ કરો:</p>
+
+<input id="apikey" type="password" placeholder="sk-..." size="40">
+
+<br><br>
 
 <button onclick="startListening()">🎤 બોલો</button>
 
 <div id="output"></div>
 
-<script>
-function startListening() {
-    const output = document.getElementById("output");
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-        output.innerHTML = "❌ તમારા બ્રાઉઝરમાં Voice Support નથી.";
-        return;
-    }
-
-    let recognizer = new SpeechRecognition();
-    recognizer.lang = "gu-IN";
-    recognizer.interimResults = false;
-    recognizer.maxAlternatives = 1;
-
-    output.innerHTML = "🎙️ સાંભળું છું... બોલો...";
-
-    recognizer.start();
-
-    recognizer.onresult = function(e) {
-        let text = e.results[0][0].transcript;
-        output.innerHTML = "📌 તમે બોલ્યા: <b>" + text + "</b>";
-        reply(text);
-    };
-
-    recognizer.onerror = function(e) {
-        output.innerHTML = "❌ Error: " + e.error;
-    };
-}
-
-function reply(msg) {
-    msg = msg.toLowerCase();
-    let ans = "";
-
-    if (msg.includes("નમસ્તે") || msg.includes("હેલો")) {
-        ans = "નમસ્તે, કેમ છો?";
-    } 
-    else if (msg.includes("તારું નામ")) {
-        ans = "મારું નામ ગુજરાતી વોઇસ અસિસ્ટન્ટ છે.";
-    }
-    else if (msg.includes("કેમ છો")) {
-        ans = "હું મજામાં છું. તમે કેમ છો?";
-    }
-    else if (msg.includes("સમય")) {
-        ans = "હમણાનો સમય " + new Date().toLocaleTimeString() + " છે.";
-    }
-    else if (msg.includes("તારીખ")) {
-        ans = "આજે તારીખ " + new Date().toLocaleDateString() + " છે.";
-    }
-    else if (msg.includes("બંધ")) {
-        ans = "બરાબર, હું બંધ કરી દઉં છું.";
-    }
-    else {
-        ans = "મને આ પ્રશ્ન સમજાયો નથી. ફરી બોલશો?";
-    }
-
-    speak(ans);
-
-    document.getElementById("output").innerHTML +=
-        "<br><br>🤖 જવાબ: <b>" + ans + "</b>";
-}
-
-function speak(text) {
-    let tts = new SpeechSynthesisUtterance(text);
-    tts.lang = "gu-IN";
-    speechSynthesis.speak(tts);
-}
-</script>
+<script src="ai.js"></script>
 
 </body>
 </html>
