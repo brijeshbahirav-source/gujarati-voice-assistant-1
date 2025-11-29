@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gujarati Voice Assistant</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    text-align: center;
+    padding: 40px;
+}
+button {
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    background: #009688;
+    color: white;
+    border-radius: 10px;
+}
+#output {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎤 Gujarati Voice Assistant</h2>
+<p>બોલો બટન દબાવો અને ગુજરાતી માં વાત કરો.</p>
+
+<button onclick="startListening()">🎤 બોલો</button>
+
+<div id="output"></div>
+
+<script>
+function startListening() {
+    const output = document.getElementById("output");
+
+    // Browser speech recognition support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        output.innerHTML = "❌ તમારા બ્રાઉઝર માં voice support નથી.";
+        return;
+    }
+
+    let recognizer = new SpeechRecognition();
+    recognizer.lang = "gu-IN";
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+
+    output.innerHTML = "🎙️ સાંભળું છું... બોલો...";
+
+    recognizer.start();
+
+    recognizer.onresult = function(e) {
+        let text = e.results[0][0].transcript;
+        output.innerHTML = "📌 તમે બોલ્યા: <b>" + text + "</b>";
+        reply(text);
+    };
+
+    recognizer.onerror = function(e) {
+        output.innerHTML = "❌ Error: " + e.error;
+    };
+}
+
+function reply(msg) {
+    msg = msg.toLowerCase();
+    let ans = "";
+
+    if (msg.includes("નમસ્તે") || msg.includes("હેલો")) {
+        ans = "નમસ્તે, કેમ છો?";
+    } 
+    else if (msg.includes("તારું નામ શું છે")) {
+        ans = "મારું નામ ગુજરાતી વોઇસ અસિસ્ટન્ટ છે.";
+    }
+    else if (msg.includes("કેમ છો")) {
+        ans = "હું મસ્ત છું. તમે કેમ છો?";
+    }
+    else if (msg.includes("સમય")) {
+        ans = "હમણાનો સમય " + new Date().toLocaleTimeString() + " છે.";
+    }
+    else if (msg.includes("થઈ ગયું")) {
+        ans = "બરાબર, કોઈ બીજી મદદ જોઈએ તો કહેજો.";
+    }
+    else {
+        ans = "મને આ પ્રશ્ન સમજાયો નથી. ફરી બોલશો?";
+    }
+
+    speak(ans);
+    document.getElementById("output").innerHTML += "<br><br>🤖 જવાબ: <b>" + ans + "</b>";
+}
+
+function speak(text) {
+    let tts = new SpeechSynthesisUtterance(text);
+    tts.lang = "gu-IN";
+    speechSynthesis.speak(tts);
+}
+</script>
+
+</body>
+</html>
