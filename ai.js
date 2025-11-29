@@ -4,16 +4,10 @@ async function askGPT(question, apiKey) {
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey,
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [
-                        {
-                            parts: [
-                                { text: question }
-                            ]
-                        }
+                        { parts: [ { text: question } ] }
                     ]
                 })
             }
@@ -49,6 +43,7 @@ function startListening() {
 
     rec.onresult = async function (event) {
         const userText = event.results[0][0].transcript;
+
         output.innerHTML = "📌 તમે બોલ્યા: <b>" + userText + "</b>";
 
         const aiReply = await askGPT(userText, apiKey);
